@@ -1,5 +1,6 @@
 using ClassifiedAds.Blazor.ConfigurationOptions;
 using ClassifiedAds.Blazor.Modules.AuditLogs.Services;
+using ClassifiedAds.Blazor.Modules.Core.Services;
 using ClassifiedAds.Blazor.Modules.Files.Services;
 using ClassifiedAds.Blazor.Modules.Products.Services;
 using ClassifiedAds.Blazor.Modules.Users.Services;
@@ -46,7 +47,13 @@ namespace ClassifiedAds.Blazor
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            if (AppSettings.Azure?.SignalR?.IsEnabled ?? false)
+            {
+                services.AddSignalR()
+                        .AddAzureSignalR();
+            }
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<TokenProvider>();
             services.AddHttpClient<FileService, FileService>(client =>
             {
                 client.BaseAddress = new Uri(AppSettings.ResourceServer.Endpoint);

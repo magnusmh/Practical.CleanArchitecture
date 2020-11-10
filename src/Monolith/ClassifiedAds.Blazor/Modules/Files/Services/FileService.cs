@@ -10,8 +10,8 @@ namespace ClassifiedAds.Blazor.Modules.Files.Services
 {
     public class FileService : HttpService
     {
-        public FileService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor) 
-            : base(httpClient, httpContextAccessor)
+        public FileService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, TokenProvider tokenProvider) 
+            : base(httpClient, httpContextAccessor, tokenProvider)
         {
         }
 

@@ -13,6 +13,8 @@ namespace ClassifiedAds.Blazor.ConfigurationOptions
 
         public LoggingOptions Logging { get; set; }
 
+        public Azure Azure { get; set; }
+
         public ValidateOptionsResult Validate()
         {
             var validationRs = OpenIdConnect.Validate();

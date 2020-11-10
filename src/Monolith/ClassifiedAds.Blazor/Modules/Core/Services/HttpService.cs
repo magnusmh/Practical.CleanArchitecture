@@ -12,22 +12,25 @@ namespace ClassifiedAds.Blazor.Modules.Core.Services
     {
         protected readonly HttpClient _httpClient;
         protected readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly TokenProvider _tokenProvider;
 
-        public HttpService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
+        public HttpService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, TokenProvider tokenProvider)
         {
             _httpClient = httpClient;
             _httpContextAccessor = httpContextAccessor;
+            _tokenProvider = tokenProvider;
         }
 
         public async Task<string> GetAccessToken()
         {
-            var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
-            return accessToken;
+            //var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
+            //return accessToken;
+            return await Task.FromResult(_tokenProvider.AccessToken);
         }
 
         protected async Task SetBearerToken()
         {
-            var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
+            var accessToken = await GetAccessToken();
             if (accessToken != null)
             {
                 _httpClient.UseBearerToken(accessToken);

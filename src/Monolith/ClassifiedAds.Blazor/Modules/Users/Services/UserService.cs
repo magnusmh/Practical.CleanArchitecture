@@ -10,8 +10,8 @@ namespace ClassifiedAds.Blazor.Modules.Users.Services
 {
     public class UserService : HttpService
     {
-        public UserService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
-            : base(httpClient, httpContextAccessor)
+        public UserService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, TokenProvider tokenProvider)
+            : base(httpClient, httpContextAccessor, tokenProvider)
         {
         }
 

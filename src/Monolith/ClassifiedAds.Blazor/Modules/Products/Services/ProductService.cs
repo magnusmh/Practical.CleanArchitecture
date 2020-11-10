@@ -10,8 +10,8 @@ namespace ClassifiedAds.Blazor.Modules.Products.Services
 {
     public class ProductService : HttpService
     {
-        public ProductService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
-            : base(httpClient, httpContextAccessor)
+        public ProductService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, TokenProvider tokenProvider)
+            : base(httpClient, httpContextAccessor, tokenProvider)
         {
         }
 

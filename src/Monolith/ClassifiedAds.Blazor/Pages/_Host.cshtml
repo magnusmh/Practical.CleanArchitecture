@@ -5,6 +5,11 @@
     Layout = null;
 }
 
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.IdentityModel.Protocols.OpenIdConnect
+@using ClassifiedAds.Blazor.Modules.Core.Services
+@using System.Globalization
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,8 +21,17 @@
     <link href="css/site.css" rel="stylesheet" />
 </head>
 <body>
+    @{
+        var token = new TokenProvider
+        {
+            AccessToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken),
+            RefreshToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.RefreshToken),
+            ExpiresAt = DateTimeOffset.TryParse(await HttpContext.GetTokenAsync("expires_at"), CultureInfo.InvariantCulture, DateTimeStyles.None, out var expiration)
+                        ? expiration : DateTimeOffset.UtcNow,
+        };
+    }
     <app>
-        <component type="typeof(App)" render-mode="ServerPrerendered" />
+        <component type="typeof(App)" render-mode="ServerPrerendered" param-InitialState="token" />
     </app>
 
     <div id="blazor-error-ui">

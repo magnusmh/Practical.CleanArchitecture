@@ -1,6 +1,6 @@
 ﻿using ClassifiedAds.Application.AuditLogEntries.DTOs;
 using ClassifiedAds.Blazor.Modules.Core.Services;
-using Microsoft.AspNetCore.Http;
+using ClassifiedAds.Infrastructure.Web.Authentication;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -9,8 +9,8 @@ namespace ClassifiedAds.Blazor.Modules.AuditLogs.Services
 {
     public class AuditLogService : HttpService
     {
-        public AuditLogService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, TokenProvider tokenProvider) 
-            : base(httpClient, httpContextAccessor, tokenProvider)
+        public AuditLogService(HttpClient httpClient, TokenProvider tokenProvider, TokenManager tokenManager) 
+            : base(httpClient, tokenProvider, tokenManager)
         {
         }
 

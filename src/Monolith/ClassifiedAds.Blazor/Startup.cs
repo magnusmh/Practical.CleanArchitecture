@@ -4,15 +4,16 @@ using ClassifiedAds.Blazor.Modules.Core.Services;
 using ClassifiedAds.Blazor.Modules.Files.Services;
 using ClassifiedAds.Blazor.Modules.Products.Services;
 using ClassifiedAds.Blazor.Modules.Users.Services;
+using ClassifiedAds.Infrastructure.Web.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Net.Http;
 
 namespace ClassifiedAds.Blazor
 {
@@ -34,6 +35,8 @@ namespace ClassifiedAds.Blazor
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<AppSettings>(Configuration);
+
             if (AppSettings.CookiePolicyOptions?.IsEnabled ?? false)
             {
                 services.Configure<Microsoft.AspNetCore.Builder.CookiePolicyOptions>(options =>
@@ -52,7 +55,16 @@ namespace ClassifiedAds.Blazor
                 services.AddSignalR()
                         .AddAzureSignalR();
             }
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<TokenManager, TokenManager>(services =>
+            {
+                return new TokenManager(services.GetRequiredService<IHttpClientFactory>(), new OpenIdConnectOptions
+                {
+                    Authority = AppSettings.OpenIdConnect.Authority,
+                    ClientId = AppSettings.OpenIdConnect.ClientId,
+                    ClientSecret = AppSettings.OpenIdConnect.ClientSecret,
+                    RequireHttpsMetadata = AppSettings.OpenIdConnect.RequireHttpsMetadata,
+                });
+            });
             services.AddScoped<TokenProvider>();
             services.AddHttpClient<FileService, FileService>(client =>
             {

@@ -1,5 +1,8 @@
 @inject NavigationManager NavigationManager
 @inject TokenProvider TokenProvider
+@inject IJSRuntime JSRuntime
+
+@using ClassifiedAds.Blazor.Modules
 
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(Program).Assembly">
@@ -27,6 +30,12 @@
         TokenProvider.AccessToken = InitialState.AccessToken;
         TokenProvider.RefreshToken = InitialState.RefreshToken;
         TokenProvider.ExpiresAt = InitialState.ExpiresAt;
+
+        if (TokenProvider.TokenExpired)
+        {
+            // TODO: relogin
+            //JSRuntime.Alert($"/login?returnUrl=/{ NavigationManager.ToBaseRelativePath(NavigationManager.Uri)}");
+        }
 
         base.OnInitialized();
     }

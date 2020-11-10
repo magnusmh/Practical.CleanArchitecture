@@ -1,7 +1,5 @@
 ﻿using ClassifiedAds.CrossCuttingConcerns.ExtensionMethods;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using ClassifiedAds.Infrastructure.Web.Authentication;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -11,24 +9,30 @@ namespace ClassifiedAds.Blazor.Modules.Core.Services
     public class HttpService
     {
         protected readonly HttpClient _httpClient;
-        protected readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly TokenProvider _tokenProvider;
+        protected readonly TokenProvider _tokenProvider;
+        protected readonly TokenManager _tokenManager;
 
-        public HttpService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, TokenProvider tokenProvider)
+        public HttpService(HttpClient httpClient, TokenProvider tokenProvider, TokenManager tokenManager)
         {
             _httpClient = httpClient;
-            _httpContextAccessor = httpContextAccessor;
             _tokenProvider = tokenProvider;
+            _tokenManager = tokenManager;
         }
 
         public async Task<string> GetAccessToken()
         {
-            //var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
-            //return accessToken;
-
-            if(_tokenProvider.TokenExpired)
+            if (_tokenProvider.TokenExpired)
             {
-                // TODO: refresh token
+                var tokens = await _tokenManager.RefreshToken(_tokenProvider.RefreshToken);
+
+                if (tokens == null)
+                {
+                    // TODO: relogin
+                }
+
+                _tokenProvider.AccessToken = tokens.AccessToken;
+                _tokenProvider.RefreshToken = tokens.RefreshToken;
+                _tokenProvider.ExpiresAt = tokens.ExpiresAt;
             }
 
             return await Task.FromResult(_tokenProvider.AccessToken);

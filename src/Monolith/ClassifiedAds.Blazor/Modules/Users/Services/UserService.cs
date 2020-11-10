@@ -1,6 +1,6 @@
 ﻿using ClassifiedAds.Blazor.Modules.Core.Services;
 using ClassifiedAds.Blazor.Modules.Users.Models;
-using Microsoft.AspNetCore.Http;
+using ClassifiedAds.Infrastructure.Web.Authentication;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -10,8 +10,8 @@ namespace ClassifiedAds.Blazor.Modules.Users.Services
 {
     public class UserService : HttpService
     {
-        public UserService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, TokenProvider tokenProvider)
-            : base(httpClient, httpContextAccessor, tokenProvider)
+        public UserService(HttpClient httpClient, TokenProvider tokenProvider, TokenManager tokenManager)
+            : base(httpClient, tokenProvider, tokenManager)
         {
         }
 

@@ -1,5 +1,8 @@
 using ClassifiedAds.Blazor.ConfigurationOptions;
-using ClassifiedAds.Blazor.Services;
+using ClassifiedAds.Blazor.Modules.AuditLogs.Services;
+using ClassifiedAds.Blazor.Modules.Files.Services;
+using ClassifiedAds.Blazor.Modules.Products.Services;
+using ClassifiedAds.Blazor.Modules.Users.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
@@ -44,7 +47,25 @@ namespace ClassifiedAds.Blazor
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddHttpClient<FileService, FileService>(client =>
+            {
+                client.BaseAddress = new Uri(AppSettings.ResourceServer.Endpoint);
+                client.Timeout = new TimeSpan(0, 0, 30);
+                client.DefaultRequestHeaders.Clear();
+            });
             services.AddHttpClient<ProductService, ProductService>(client =>
+            {
+                client.BaseAddress = new Uri(AppSettings.ResourceServer.Endpoint);
+                client.Timeout = new TimeSpan(0, 0, 30);
+                client.DefaultRequestHeaders.Clear();
+            });
+            services.AddHttpClient<UserService, UserService>(client =>
+            {
+                client.BaseAddress = new Uri(AppSettings.ResourceServer.Endpoint);
+                client.Timeout = new TimeSpan(0, 0, 30);
+                client.DefaultRequestHeaders.Clear();
+            });
+            services.AddHttpClient<AuditLogService, AuditLogService>(client =>
             {
                 client.BaseAddress = new Uri(AppSettings.ResourceServer.Endpoint);
                 client.Timeout = new TimeSpan(0, 0, 30);
@@ -70,6 +91,7 @@ namespace ClassifiedAds.Blazor
                 options.Scope.Add("offline_access");
                 options.SaveTokens = true;
                 options.GetClaimsFromUserInfoEndpoint = true;
+                options.TokenValidationParameters.NameClaimType = "name";
                 options.RequireHttpsMetadata = AppSettings.OpenIdConnect.RequireHttpsMetadata;
             });
         }

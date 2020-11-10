@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
+using ClassifiedAds.Blazor.ConfigurationOptions;
+using ClassifiedAds.Infrastructure.Logging;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace ClassifiedAds.Blazor
 {
@@ -23,6 +18,12 @@ namespace ClassifiedAds.Blazor
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseClassifiedAdsLogger(configuration =>
+                     {
+                         var appSettings = new AppSettings();
+                         configuration.Bind(appSettings);
+                         return appSettings.Logging;
+                     });
                 });
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using ClassifiedAds.Infrastructure.Logging;
+using Microsoft.Extensions.Options;
 
 namespace ClassifiedAds.Blazor.ConfigurationOptions
 {
@@ -9,6 +10,8 @@ namespace ClassifiedAds.Blazor.ConfigurationOptions
         public ResourceServer ResourceServer { get; set; }
 
         public CookiePolicyOptions CookiePolicyOptions { get; set; }
+
+        public LoggingOptions Logging { get; set; }
 
         public ValidateOptionsResult Validate()
         {

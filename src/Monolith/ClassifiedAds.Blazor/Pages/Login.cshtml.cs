@@ -7,11 +7,14 @@ namespace ClassifiedAds.Blazor
 {
     public class LoginModel : PageModel
     {
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(string returnUrl)
         {
             if (!HttpContext.User.Identity.IsAuthenticated)
             {
-                await HttpContext.ChallengeAsync(OpenIdConnectDefaults.AuthenticationScheme);
+                await HttpContext.ChallengeAsync(OpenIdConnectDefaults.AuthenticationScheme, new AuthenticationProperties
+                {
+                    RedirectUri = Url.IsLocalUrl(returnUrl) ? returnUrl : "/"
+                });
             }
             else
             {

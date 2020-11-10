@@ -1,0 +1,57 @@
+﻿using ClassifiedAds.Blazor.Modules.Core.Services;
+using ClassifiedAds.Blazor.Modules.Users.Models;
+using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+namespace ClassifiedAds.Blazor.Modules.Users.Services
+{
+    public class UserService : HttpService
+    {
+        public UserService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor) 
+            : base(httpClient, httpContextAccessor)
+        {
+        }
+
+        public async Task<List<UserModel>> GetUsers()
+        {
+            var users = await GetAsync<List<UserModel>>("api/users");
+            return users;
+        }
+
+        public async Task<UserModel> GetUserById(Guid id)
+        {
+            var user = await GetAsync<UserModel>($"api/users/{id}");
+            return user;
+        }
+
+        public async Task<UserModel> CreateUser(UserModel product)
+        {
+            var createdUser = await PostAsync<UserModel>("api/users", product);
+            return createdUser;
+        }
+
+        public async Task<UserModel> UpdateUser(Guid id, UserModel product)
+        {
+            var updatedUser = await PutAsync<UserModel>($"api/users/{id}", product);
+            return updatedUser;
+        }
+
+        public async Task DeleteUser(Guid id)
+        {
+            await DeleteAsync($"api/users/{id}");
+        }
+
+        public async Task SendPasswordResetEmail(Guid id)
+        {
+            await PostAsync<string>($"api/users/{id}/passwordresetemail");
+        }
+
+        public async Task SendEmailAddressConfirmationEmail(Guid id)
+        {
+            await PostAsync<string>($"api/users/{id}/emailaddressconfirmation");
+        }
+    }
+}

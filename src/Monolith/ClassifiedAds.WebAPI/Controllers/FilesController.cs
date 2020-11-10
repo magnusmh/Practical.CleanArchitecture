@@ -6,6 +6,7 @@ using ClassifiedAds.Domain.Infrastructure.Storages;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -26,11 +27,13 @@ namespace ClassifiedAds.WebAPI.Controllers
     {
         private readonly Dispatcher _dispatcher;
         private readonly IFileStorageManager _fileManager;
+        private readonly IMemoryCache _memoryCache;
 
-        public FilesController(Dispatcher dispatcher, IFileStorageManager fileManager)
+        public FilesController(Dispatcher dispatcher, IFileStorageManager fileManager, IMemoryCache memoryCache)
         {
             _dispatcher = dispatcher;
             _fileManager = fileManager;
+            _memoryCache = memoryCache;
         }
 
         public ActionResult<IEnumerable<FileEntry>> Get()
@@ -75,6 +78,30 @@ namespace ClassifiedAds.WebAPI.Controllers
             var fileEntry = _dispatcher.Dispatch(new GetEntityByIdQuery<FileEntry> { Id = id });
             var content = _fileManager.Read(fileEntry);
             return File(content, MediaTypeNames.Application.Octet, WebUtility.HtmlEncode(fileEntry.FileName));
+        }
+
+        [HttpGet("{id}/downloadtoken")]
+        public IActionResult GetDownloadToken(Guid id)
+        {
+            var guid = Guid.NewGuid();
+            _memoryCache.Set(guid, id);
+            return Ok(guid);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{id}/downloadwithtoken")]
+        public IActionResult Download(Guid id, Guid token)
+        {
+            if (_memoryCache.Get(token).ToString() == id.ToString())
+            {
+                _memoryCache.Remove(token);
+
+                var fileEntry = _dispatcher.Dispatch(new GetEntityByIdQuery<FileEntry> { Id = id });
+                var content = _fileManager.Read(fileEntry);
+                return File(content, MediaTypeNames.Application.Octet, WebUtility.HtmlEncode(fileEntry.FileName));
+            }
+
+            return NotFound();
         }
 
         [HttpPut("{id}")]

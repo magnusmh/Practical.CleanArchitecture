@@ -3,6 +3,7 @@ using ClassifiedAds.Blazor.Modules.Files.Components;
 using ClassifiedAds.Blazor.Modules.Files.Models;
 using ClassifiedAds.Blazor.Modules.Files.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -16,6 +17,9 @@ namespace ClassifiedAds.Blazor.Modules.Files.Pages
         [Inject]
         public FileService FileService { get; set; }
 
+        [Inject]
+        public IJSRuntime JSRuntime { get; set; }
+
         public List<FileEntryModel> Files { get; set; } = new List<FileEntryModel>();
 
         protected AuditLogsDialog AuditLogsDialog { get; set; }
@@ -28,6 +32,12 @@ namespace ClassifiedAds.Blazor.Modules.Files.Pages
         {
             Files = await FileService.GetFiles();
         }
+        protected async Task Download(FileEntryModel file)
+        {
+            var token = await FileService.GetDownloadToken(file.Id);
+            await JSRuntime.InvokeVoidAsync("interop.downloadFile", FileService.GetDownloadUrl(file.Id, token), file.FileName);
+        }
+
 
         protected async Task ViewAuditLogs(FileEntryModel file)
         {

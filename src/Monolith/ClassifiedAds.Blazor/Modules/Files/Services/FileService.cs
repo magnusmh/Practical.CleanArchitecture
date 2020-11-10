@@ -15,6 +15,16 @@ namespace ClassifiedAds.Blazor.Modules.Files.Services
         {
         }
 
+        public string GetDownloadUrl(Guid id, string token)
+        {
+            return $"{_httpClient.BaseAddress.AbsoluteUri.Trim('/')}/api/files/{id}/downloadwithtoken?token={token}";
+        }
+
+        public string GetUploadUrl()
+        {
+            return $"{_httpClient.BaseAddress.AbsoluteUri.Trim('/')}/api/files";
+        }
+
         public async Task<List<FileEntryModel>> GetFiles()
         {
             var files = await GetAsync<List<FileEntryModel>>("api/files");
@@ -48,6 +58,12 @@ namespace ClassifiedAds.Blazor.Modules.Files.Services
         {
             var auditLogs = await GetAsync<List<FileEntryAuditLogModel>>($"api/files/{id}/auditlogs");
             return auditLogs;
+        }
+
+        public async Task<string> GetDownloadToken(Guid id)
+        {
+            var token = await GetAsync<string>($"api/files/{id}/downloadtoken");
+            return token;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using ClassifiedAds.Blazor.Modules.Files.Models;
+﻿using ClassifiedAds.Blazor.Modules.Files.Components;
+using ClassifiedAds.Blazor.Modules.Files.Models;
 using ClassifiedAds.Blazor.Modules.Files.Services;
 using Microsoft.AspNetCore.Components;
 using System;
@@ -19,9 +20,23 @@ namespace ClassifiedAds.Blazor.Modules.Files.Pages
 
         public FileEntryModel File { get; set; } = new FileEntryModel();
 
+        protected AuditLogsDialog AuditLogsDialog { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             File = await FileService.GetFileById(Guid.Parse(Id));
+        }
+
+        protected async Task ViewAuditLogs()
+        {
+            var logs = await FileService.GetAuditLogs(File.Id);
+            AuditLogsDialog.Show(logs);
+        }
+
+        protected async Task HandleValidSubmit()
+        {
+            await FileService.UpdateFile(File.Id, File);
+            NavManager.NavigateTo("/files");
         }
     }
 }

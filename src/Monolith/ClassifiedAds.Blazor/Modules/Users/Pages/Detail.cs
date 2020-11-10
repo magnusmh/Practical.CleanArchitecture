@@ -1,4 +1,5 @@
 ﻿using ClassifiedAds.Blazor.Modules.Core.Components;
+using ClassifiedAds.Blazor.Modules.Users.Components;
 using ClassifiedAds.Blazor.Modules.Users.Models;
 using ClassifiedAds.Blazor.Modules.Users.Services;
 using Microsoft.AspNetCore.Components;
@@ -19,6 +20,8 @@ namespace ClassifiedAds.Blazor.Modules.Users.Pages
         public string Id { get; set; }
 
         public UserModel User { get; set; } = new UserModel();
+
+        public SetPasswordDialog SetPasswordDialog { get; set; }
 
         public ConfirmDialog SendPasswordResetEmailDialog { get; set; }
 

@@ -10,7 +10,7 @@ namespace ClassifiedAds.Blazor.Modules.Users.Services
 {
     public class UserService : HttpService
     {
-        public UserService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor) 
+        public UserService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
             : base(httpClient, httpContextAccessor)
         {
         }
@@ -42,6 +42,11 @@ namespace ClassifiedAds.Blazor.Modules.Users.Services
         public async Task DeleteUser(Guid id)
         {
             await DeleteAsync($"api/users/{id}");
+        }
+
+        public async Task SetPassword(SetPasswordModel model)
+        {
+            await PutAsync<string>($"api/users/{model.Id}/password", model);
         }
 
         public async Task SendPasswordResetEmail(Guid id)

@@ -35,7 +35,5 @@ namespace ClassifiedAds.Blazor.Modules.Users.Models
         public DateTimeOffset? LockoutEnd { get; set; }
 
         public int AccessFailedCount { get; set; }
-
-        public string Password { get; set; }
     }
 }

@@ -19,6 +19,12 @@ namespace ClassifiedAds.Blazor.Modules.Core.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
+        public async Task<string> GetAccessToken()
+        {
+            var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
+            return accessToken;
+        }
+
         protected async Task SetBearerToken()
         {
             var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);

@@ -25,6 +25,12 @@ namespace ClassifiedAds.Blazor.Modules.Core.Services
         {
             //var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
             //return accessToken;
+
+            if(_tokenProvider.TokenExpired)
+            {
+                // TODO: refresh token
+            }
+
             return await Task.FromResult(_tokenProvider.AccessToken);
         }
 

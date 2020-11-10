@@ -10,11 +10,11 @@ namespace ClassifiedAds.Blazor.Modules.Core.Services
 
         public DateTimeOffset ExpiresAt { get; set; }
 
-        public bool Expired
+        public bool TokenExpired
         {
             get
             {
-                return ExpiresAt.AddSeconds(-60).ToUniversalTime() > DateTime.UtcNow;
+                return ExpiresAt.AddSeconds(-60).ToUniversalTime() <= DateTime.UtcNow;
             }
         }
     }
